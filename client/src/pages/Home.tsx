@@ -9,6 +9,8 @@ import { getPosts } from "../actions/postActions";
 
 const Home = () => {
   const [currentId, setCurrentId] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
   const dispatch = useDispatch();
   const user = JSON.parse(localStorage.getItem("profile") as string);
 
@@ -37,21 +39,30 @@ const Home = () => {
               username={username}
               key={_id}
               setCurrentId={setCurrentId}
+              modalOpen={modalOpen}
+              setModalOpen={setModalOpen}
             />
           ))}
         </Masonry>
       </ResponsiveMasonry>
       {/* Modal abd FAB */}
-      <input type="checkbox" id="post-modal" className="modal-toggle" />
-      <PostForm currentId={currentId} setCurrentId={setCurrentId} />
+      {modalOpen ? (
+        <PostForm
+          currentId={currentId}
+          setCurrentId={setCurrentId}
+          setModalOpen={setModalOpen}
+        />
+      ) : null}
       <div className="w-full flex justify-center fixed bottom-10">
-        <label
-          htmlFor="post-modal"
+        <button
+          onClick={() => {
+            setModalOpen(true);
+          }}
           className="btn btn-wide btn-accent shadow-md transition-all hover:shadow-xl"
         >
           <PlusIcon className="w-4 h-4 mr-3 pointer-events-none" />
           New Post
-        </label>
+        </button>
       </div>
     </main>
   );

@@ -11,7 +11,11 @@ export type PostType = {
   description: string;
   createdAt?: string;
 };
-type PostProps = PostType & { setCurrentId: Dispatch<SetStateAction<any>> };
+type PostProps = PostType & {
+  setCurrentId: Dispatch<SetStateAction<string | null>>;
+  modalOpen: boolean;
+  setModalOpen: Dispatch<SetStateAction<boolean>>;
+};
 const Post = ({
   _id,
   username,
@@ -19,6 +23,8 @@ const Post = ({
   description,
   createdAt,
   setCurrentId,
+  modalOpen,
+  setModalOpen,
 }: PostProps) => {
   const dispatch = useDispatch();
   const user: UserType = JSON.parse(localStorage.getItem("profile") as string);
@@ -39,13 +45,15 @@ const Post = ({
               >
                 <TrashIcon className="w-5 h-5" />
               </button>
-              <label
-                htmlFor="post-modal"
+              <button
                 className="btn btn-info btn-square transition-colors hover:bg-cyan-500"
-                onClick={() => setCurrentId(_id as string)}
+                onClick={() => {
+                  setCurrentId(_id as string);
+                  setModalOpen(true);
+                }}
               >
                 <PencilSquareIcon className="w-5 h-5" />
-              </label>
+              </button>
             </>
           ) : null}
         </div>

@@ -16,3 +16,8 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     </Provider>
   </React.StrictMode>
 );
+
+// TODO: redux toolkit
+// TODO: code cleanup
+// TODO: google Oauth
+// TODO: protected route

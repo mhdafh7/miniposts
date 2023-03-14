@@ -1,5 +1,5 @@
 import { ErrorMessage, Field, Formik, Form, FormikHelpers } from "formik";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { createPost, updatePost } from "../actions/postActions";
@@ -18,13 +18,14 @@ type FormValues = {
 type FormProps = {
   currentId: any;
   setCurrentId: Dispatch<SetStateAction<any>>;
+  setModalOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export type UserType = {
   result: { username: string; email: string; _id: string };
   token: string;
 };
-const PostForm = ({ currentId, setCurrentId }: FormProps) => {
+const PostForm = ({ currentId, setCurrentId, setModalOpen }: FormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const dispatch = useDispatch();
@@ -52,28 +53,20 @@ const PostForm = ({ currentId, setCurrentId }: FormProps) => {
           username: user.result.username,
         })
       );
+      resetForm();
     } else {
       dispatch(
-        updatePost(currentId, { ...postData, username: user.result.username })
+        updatePost(currentId, { ...values, username: user.result.username })
       );
+      setCurrentId(null);
+      resetForm();
     }
-    resetForm();
-    setPostData({ title: "", description: "" });
   };
   const initialValues: FormValues = {
     title: post ? post.title : "",
     description: post ? post.description : "",
   };
   console.log(initialValues);
-
-  // useEffect(() => {
-  //   console.log(currentId);
-
-  //   if (post) {
-  //     setPostData(post);
-  //     console.log(postData);
-  //   }
-  // }, [post]);
 
   return (
     <Formik
@@ -82,14 +75,16 @@ const PostForm = ({ currentId, setCurrentId }: FormProps) => {
       onSubmit={handleSubmit}
     >
       {(formik) => (
-        <Form className="modal modal-bottom !visible !opacity-100 sm:modal-middle">
+        <Form className="modal modal-bottom !visible !opacity-100 !pointer-events-auto sm:modal-middle">
           <div className="modal-box">
-            <label
-              htmlFor="post-modal"
+            <button
+              onClick={() => {
+                setModalOpen(false);
+              }}
               className="btn btn-sm btn-square absolute right-2 top-2"
             >
               ✕
-            </label>
+            </button>
             <div className="form-control">
               <label htmlFor="title" className="label">
                 Title
@@ -124,7 +119,7 @@ const PostForm = ({ currentId, setCurrentId }: FormProps) => {
               disabled={isSubmitting || !formik.isValid}
               className="btn btn-block btn-primary mt-3"
             >
-              {currentId ? "Add Note" : "Edit Note"}
+              {!currentId ? "Add post" : "Edit post"}
             </button>
           </div>
           {/* <button
