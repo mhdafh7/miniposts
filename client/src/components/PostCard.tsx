@@ -1,26 +1,53 @@
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { Dispatch, SetStateAction } from "react";
+import { useDispatch } from "react-redux";
+import { deletePost } from "../actions/postActions";
+import { UserType } from "./PostForm";
 
 export type PostType = {
   _id?: string;
-  creator: string;
+  username: string;
   title: string;
   description: string;
   createdAt?: string;
 };
-const Post = ({ title, description, creator }: PostType) => {
+type PostProps = PostType & { setCurrentId: Dispatch<SetStateAction<any>> };
+const Post = ({
+  _id,
+  username,
+  title,
+  description,
+  createdAt,
+  setCurrentId,
+}: PostProps) => {
+  const dispatch = useDispatch();
+  const user: UserType = JSON.parse(localStorage.getItem("profile") as string);
+
   return (
-    <article className="card w-96 bg-base-100 shadow-xl transition-shadow hover:shadow-2xl">
+    <article className="card w-96 bg-neutral-content shadow-xl transition-all hover:shadow-2xl hover:bg-neutral-focus hover:text-base-100 cursor-pointer">
       <div className="card-body">
         <h2 className="card-title">{title}</h2>
         <p>{description}</p>
         <div className="card-actions justify-start items-center">
-          <p className="text-neutral opacity-60">post by @{creator}</p>
-          <button className="btn btn-error">
-            <TrashIcon className="w-5 h-5" />
-          </button>
-          <button className="btn btn-info">
-            <PencilSquareIcon className="w-5 h-5" />
-          </button>
+          <p className="opacity-60">post by @{username}</p>
+          {user.result.username === username ||
+          user.result.username === "mhdafh" ? (
+            <>
+              <button
+                className="btn btn-error btn-square transition-colors hover:bg-red-500"
+                onClick={() => dispatch(deletePost(_id as string))}
+              >
+                <TrashIcon className="w-5 h-5" />
+              </button>
+              <label
+                htmlFor="post-modal"
+                className="btn btn-info btn-square transition-colors hover:bg-cyan-500"
+                onClick={() => setCurrentId(_id as string)}
+              >
+                <PencilSquareIcon className="w-5 h-5" />
+              </label>
+            </>
+          ) : null}
         </div>
       </div>
     </article>

@@ -1,5 +1,5 @@
 import { NavigateFunction } from "react-router";
-import { AnyAction, Dispatch } from "redux";
+import { Dispatch } from "redux";
 import * as api from "../api/index";
 import { SignInFormValues } from "../pages/Signin";
 import { SignUpFormValues } from "../pages/Signup";

@@ -1,8 +1,9 @@
-import { ErrorMessage, Field, Formik, Form } from "formik";
-import { useState } from "react";
+import { ErrorMessage, Field, Formik, Form, FormikHelpers } from "formik";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { createPost, updatePost } from "../actions/postActions";
+import { PostType } from "./PostCard";
 
 const validationSchema = Yup.object({
   title: Yup.string().required("Title is required"),
@@ -14,33 +15,74 @@ type FormValues = {
   description: string;
 };
 
-const handleSubmit = async (values: FormValues) => {};
-
 type FormProps = {
   currentId: any;
-  setCurrentId: any;
+  setCurrentId: Dispatch<SetStateAction<any>>;
+};
+
+export type UserType = {
+  result: { username: string; email: string; _id: string };
+  token: string;
 };
 const PostForm = ({ currentId, setCurrentId }: FormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const dispatch = useDispatch();
   const post = useSelector((state: any) =>
     currentId
-      ? state.posts.find((message: { _id: any }) => message._id === currentId)
+      ? state.posts.find((post: PostType) => post._id === currentId)
       : null
   );
+  const [postData, setPostData] = useState({ title: "", description: "" });
+
   const profileString = localStorage.getItem("profile");
+  let user: UserType;
   if (profileString !== null) {
-    const user = JSON.parse(profileString);
+    user = JSON.parse(profileString);
   }
+
+  const handleSubmit = async (
+    values: FormValues,
+    { resetForm }: FormikHelpers<FormValues>
+  ) => {
+    if (!currentId) {
+      dispatch(
+        createPost({
+          ...values,
+          username: user.result.username,
+        })
+      );
+    } else {
+      dispatch(
+        updatePost(currentId, { ...postData, username: user.result.username })
+      );
+    }
+    resetForm();
+    setPostData({ title: "", description: "" });
+  };
+  const initialValues: FormValues = {
+    title: post ? post.title : "",
+    description: post ? post.description : "",
+  };
+  console.log(initialValues);
+
+  // useEffect(() => {
+  //   console.log(currentId);
+
+  //   if (post) {
+  //     setPostData(post);
+  //     console.log(postData);
+  //   }
+  // }, [post]);
 
   return (
     <Formik
-      initialValues={{ creator: "", title: "", description: "" }}
+      initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
       {(formik) => (
-        <Form className="modal modal-bottom sm:modal-middle">
+        <Form className="modal modal-bottom !visible !opacity-100 sm:modal-middle">
           <div className="modal-box">
             <label
               htmlFor="post-modal"
@@ -50,7 +92,7 @@ const PostForm = ({ currentId, setCurrentId }: FormProps) => {
             </label>
             <div className="form-control">
               <label htmlFor="title" className="label">
-                Title:
+                Title
               </label>
               <Field
                 id="title"
@@ -64,7 +106,7 @@ const PostForm = ({ currentId, setCurrentId }: FormProps) => {
             </div>
             <div className="form-control">
               <label htmlFor="description" className="label">
-                Description:
+                Description
               </label>
               <Field
                 id="description"
@@ -82,7 +124,7 @@ const PostForm = ({ currentId, setCurrentId }: FormProps) => {
               disabled={isSubmitting || !formik.isValid}
               className="btn btn-block btn-primary mt-3"
             >
-              Submit
+              {currentId ? "Add Note" : "Edit Note"}
             </button>
           </div>
           {/* <button

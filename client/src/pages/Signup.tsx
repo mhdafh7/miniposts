@@ -45,7 +45,6 @@ const Signup = () => {
             onSubmit={(values: SignUpFormValues) => {
               try {
                 dispatch(signup(values, navigate));
-                console.log(values);
               } catch (error) {
                 let errorMessage = "error.unknown";
                 if (typeof error === "string") {

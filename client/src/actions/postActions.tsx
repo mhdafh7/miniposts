@@ -1,20 +1,20 @@
+import { Dispatch } from "redux";
 import * as api from "../api/index";
 import { PostType } from "../components/PostCard";
 
-export const getPosts =
-  () => async (dispatch: (arg0: { type: any; payload: any }) => void) => {
-    try {
-      const { data } = await api.fetchPosts();
+export const getPosts = (): any => async (dispatch: Dispatch) => {
+  try {
+    const { data } = await api.fetchPosts();
 
-      dispatch({ type: "FETCH_ALL", payload: data });
-    } catch (error) {
-      if (error instanceof Error) console.error(error.message);
-    }
-  };
+    dispatch({ type: "FETCH_ALL", payload: data });
+  } catch (error) {
+    if (error instanceof Error) console.error(error.message);
+  }
+};
 
 export const createPost =
-  (post: PostType) =>
-  async (dispatch: (arg0: { type: any; payload: any }) => void) => {
+  (post: PostType): any =>
+  async (dispatch: Dispatch) => {
     try {
       const { data } = await api.createPost(post);
 
@@ -25,8 +25,8 @@ export const createPost =
   };
 
 export const updatePost =
-  (id: string, post: PostType) =>
-  async (dispatch: (arg0: { type: any; payload: any }) => void) => {
+  (id: string, post: PostType): any =>
+  async (dispatch: Dispatch) => {
     try {
       const { data } = await api.updatePost(id, post);
 
@@ -37,13 +37,14 @@ export const updatePost =
   };
 
 export const deletePost =
-  (id: string) =>
-  async (dispatch: (arg0: { type: any; payload: any }) => void) => {
+  (_id: string): any =>
+  async (dispatch: Dispatch) => {
     try {
-      await api.deletePost(id);
+      await api.deletePost(_id);
 
-      dispatch({ type: "DELETE", payload: id });
+      dispatch({ type: "DELETE", payload: _id });
     } catch (error) {
-      if (error instanceof Error) console.error(error.message);
+      // if (error instanceof Error) console.error(error.message);
+      console.error(error)
     }
   };
