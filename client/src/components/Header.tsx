@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import decode from "jwt-decode";
 import { UserType } from "./PostForm";
+import { logout } from "../features/auth/authSlice";
 
 type DecodedTokenType = {
   email: string;
@@ -18,9 +19,8 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const logout = () => {
-    dispatch({ type: "LOGOUT" });
-
+  const handleLogout = () => {
+    dispatch(logout());
     navigate("/signin");
 
     setUser(null);
@@ -53,7 +53,10 @@ const Header = () => {
         </label>
         <span>@{user?.result.username}</span>
       </div>
-      <button className="btn btn-warning btn-outline ml-4" onClick={logout}>
+      <button
+        className="btn btn-warning btn-outline ml-4"
+        onClick={handleLogout}
+      >
         Logout
       </button>
     </header>

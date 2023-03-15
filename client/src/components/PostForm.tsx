@@ -2,8 +2,9 @@ import { ErrorMessage, Field, Formik, Form, FormikHelpers } from "formik";
 import { Dispatch, SetStateAction, useState } from "react";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { createPost, updatePost } from "../actions/postActions";
+import { createPost, updatePost } from "../features/posts/postServices";
 import { PostType } from "./PostCard";
+import { AsyncThunkAction } from "@reduxjs/toolkit";
 
 const validationSchema = Yup.object({
   title: Yup.string().required("Title is required"),
@@ -28,7 +29,10 @@ export type UserType = {
 const PostForm = ({ currentId, setCurrentId, setModalOpen }: FormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch() as Dispatch<
+    | AsyncThunkAction<any, PostType, any>
+    | AsyncThunkAction<any, { id: string; post: PostType }, any>
+  >;
   const post = useSelector((state: any) =>
     currentId
       ? state.posts.find((post: PostType) => post._id === currentId)
@@ -54,9 +58,13 @@ const PostForm = ({ currentId, setCurrentId, setModalOpen }: FormProps) => {
         })
       );
       resetForm();
+      setIsSubmitting(false);
     } else {
       dispatch(
-        updatePost(currentId, { ...values, username: user.result.username })
+        updatePost({
+          id: currentId,
+          post: { ...values, username: user.result.username },
+        })
       );
       setCurrentId(null);
       resetForm();

@@ -1,7 +1,8 @@
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { AsyncThunkAction } from "@reduxjs/toolkit";
 import { Dispatch, SetStateAction } from "react";
 import { useDispatch } from "react-redux";
-import { deletePost } from "../actions/postActions";
+import { deletePost } from "../features/posts/postServices";
 import { UserType } from "./PostForm";
 
 export type PostType = {
@@ -26,7 +27,9 @@ const Post = ({
   modalOpen,
   setModalOpen,
 }: PostProps) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch() as Dispatch<
+    AsyncThunkAction<string, string, any>
+  >;
   const user: UserType = JSON.parse(localStorage.getItem("profile") as string);
 
   return (

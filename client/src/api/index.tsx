@@ -3,7 +3,8 @@ import { PostType } from "../components/PostCard";
 import { SignInFormValues } from "../pages/Signin";
 import { SignUpFormValues } from "../pages/Signup";
 
-const API = axios.create({ baseURL: import.meta.env.VITE_SERVER_URL });
+const API = axios.create({
+  baseURL: "https://miniposts-production.up.railway.app"});
 
 API.interceptors.request.use((req) => {
   if (localStorage.getItem("profile")) {

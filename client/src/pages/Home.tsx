@@ -4,23 +4,25 @@ import PostCard, { PostType } from "../components/PostCard";
 import PostForm from "../components/PostForm";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { useDispatch, useSelector } from "react-redux";
-import { useState, useEffect } from "react";
-import { getPosts } from "../actions/postActions";
+import { useState, useEffect, Dispatch } from "react";
+import { getPosts } from "../features/posts/postServices";
+import { AsyncThunkAction } from "@reduxjs/toolkit";
 
 const Home = () => {
   const [currentId, setCurrentId] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch() as Dispatch<AsyncThunkAction<any, void, any>>;
   const user = JSON.parse(localStorage.getItem("profile") as string);
 
   useEffect(() => {
     if (user) dispatch(getPosts());
   }, [currentId, dispatch]);
 
-  const posts: PostType[] = useSelector(
-    (state: { posts: PostType[] }) => state.posts
+  const posts = useSelector(
+    (state: { post: { posts: PostType[] } }) => state.post.posts
   );
+  console.log(posts);
 
   return (
     <main className="mt-24 items-center">

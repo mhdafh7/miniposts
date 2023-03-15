@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 
-import { signin } from "../actions/authActions";
+import { signin } from "../features/auth/authServices";
 
 export type SignInFormValues = {
   email: string;
@@ -32,21 +32,18 @@ const Signin = () => {
               password: "",
             }}
             validationSchema={SignInSchema}
-            onSubmit={(values: SignInFormValues) => {
+            onSubmit={async (formData: SignInFormValues) => {
               try {
-                dispatch(signin(values, navigate));
+                setIsSubmitting(true);
+                dispatch<any>(signin({ formData, navigate }));
               } catch (error) {
+                setIsSubmitting(false);
                 let errorMessage = "error.unknown";
                 if (typeof error === "string") {
                   errorMessage = error.toUpperCase();
                 } else if (error instanceof Error) {
                   errorMessage = error.message;
                 }
-                //   toast.error(`Sign up error! ${errorMessage}`, {
-                //     position: toast.POSITION.BOTTOM_CENTER,
-                //     // autoClose: 3500,
-                //     closeOnClick: true,
-                //   });
                 console.error(errorMessage);
               }
             }}

@@ -2,12 +2,14 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { Provider } from "react-redux";
-import { createStore, applyMiddleware, compose } from "redux";
-import thunk from "redux-thunk";
-import { reducers } from "./reducers";
 import "./index.css";
+import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "./features/auth/authSlice";
+import postReducer from "./features/posts/postSlice";
 
-const store = createStore(reducers, compose(applyMiddleware(thunk)));
+const store = configureStore({
+  reducer: { auth: authReducer, post: postReducer },
+});
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -17,7 +19,5 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   </React.StrictMode>
 );
 
-// TODO: redux toolkit
-// TODO: code cleanup
 // TODO: google Oauth
 // TODO: protected route

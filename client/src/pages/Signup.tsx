@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { Dispatch, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 
-import { signup } from "../actions/authActions";
 import passwordValidation from "../lib/passwordValidation";
+import { signup, SignUpPayload } from "../features/auth/authServices";
+import { AsyncThunkAction } from "@reduxjs/toolkit";
 
 export type SignUpFormValues = {
   username: string;
@@ -25,7 +26,9 @@ const SignUpSchema = Yup.object().shape({
 
 const Signup = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch() as Dispatch<
+    AsyncThunkAction<any, SignUpPayload, any>
+  >;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
@@ -42,9 +45,9 @@ const Signup = () => {
               confirmPassword: "",
             }}
             validationSchema={SignUpSchema}
-            onSubmit={(values: SignUpFormValues) => {
+            onSubmit={(formData: SignUpFormValues) => {
               try {
-                dispatch(signup(values, navigate));
+                dispatch(signup({ formData, navigate }));
               } catch (error) {
                 let errorMessage = "error.unknown";
                 if (typeof error === "string") {
