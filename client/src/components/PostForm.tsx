@@ -35,10 +35,9 @@ const PostForm = ({ currentId, setCurrentId, setModalOpen }: FormProps) => {
   >;
   const post = useSelector((state: any) =>
     currentId
-      ? state.posts.find((post: PostType) => post._id === currentId)
+      ? state.post.posts.find((item: PostType) => item._id === currentId)
       : null
   );
-  const [postData, setPostData] = useState({ title: "", description: "" });
 
   const profileString = localStorage.getItem("profile");
   let user: UserType;
@@ -50,6 +49,7 @@ const PostForm = ({ currentId, setCurrentId, setModalOpen }: FormProps) => {
     values: FormValues,
     { resetForm }: FormikHelpers<FormValues>
   ) => {
+    setIsSubmitting(true);
     if (!currentId) {
       dispatch(
         createPost({
@@ -59,6 +59,7 @@ const PostForm = ({ currentId, setCurrentId, setModalOpen }: FormProps) => {
       );
       resetForm();
       setIsSubmitting(false);
+      setModalOpen(false);
     } else {
       dispatch(
         updatePost({
@@ -66,15 +67,16 @@ const PostForm = ({ currentId, setCurrentId, setModalOpen }: FormProps) => {
           post: { ...values, username: user.result.username },
         })
       );
+      setIsSubmitting(false);
       setCurrentId(null);
       resetForm();
+      setModalOpen(false);
     }
   };
   const initialValues: FormValues = {
     title: post ? post.title : "",
     description: post ? post.description : "",
   };
-  console.log(initialValues);
 
   return (
     <Formik
@@ -83,7 +85,7 @@ const PostForm = ({ currentId, setCurrentId, setModalOpen }: FormProps) => {
       onSubmit={handleSubmit}
     >
       {(formik) => (
-        <Form className="modal modal-bottom !visible !opacity-100 !pointer-events-auto sm:modal-middle">
+        <Form className="modal modal-bottom !visible !opacity-100 !pointer-events-auto sm:modal-middle backdrop-blur-md bg-black bg-opacity-30">
           <div className="modal-box">
             <button
               onClick={() => {
@@ -130,17 +132,6 @@ const PostForm = ({ currentId, setCurrentId, setModalOpen }: FormProps) => {
               {!currentId ? "Add post" : "Edit post"}
             </button>
           </div>
-          {/* <button
-            type="submit"
-            disabled={isSubmitting || !formik.isValid}
-            className={
-              isSubmitting || !formik.isValid
-                ? "btn btn-block btn-loading"
-                : "btn btn-block btn-accent"
-            }
-          >
-            Submit
-          </button> */}
         </Form>
       )}
     </Formik>
