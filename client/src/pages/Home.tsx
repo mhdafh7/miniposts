@@ -22,7 +22,6 @@ const Home = () => {
   const posts = useSelector(
     (state: { post: { posts: PostType[] } }) => state.post.posts
   );
-  console.log(posts);
 
   return (
     <main className="mt-24 items-center">
@@ -32,7 +31,7 @@ const Home = () => {
         columnsCountBreakPoints={{ 576: 1, 768: 2, 1166: 3 }}
         className="h-full w-full py-12"
       >
-        <Masonry gutter="10px" className="[&>*]:items-center">
+        <Masonry gutter="20px" className="[&>*]:items-center">
           {posts.map(({ title, description, username, _id }: PostType) => (
             <PostCard
               _id={_id}
