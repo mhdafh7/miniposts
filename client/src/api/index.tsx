@@ -4,7 +4,7 @@ import { SignInFormValues } from "../pages/Signin";
 import { SignUpFormValues } from "../pages/Signup";
 
 const API = axios.create({
-  baseURL: "https://miniposts-production.up.railway.app"});
+  baseURL: import.meta.env.VITE_BASE_URL,});
 
 API.interceptors.request.use((req) => {
   if (localStorage.getItem("profile")) {
