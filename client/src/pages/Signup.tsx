@@ -34,7 +34,7 @@ const Signup = () => {
   return (
     <div className="hero min-h-screen bg-base-200">
       <div className="hero-content flex-col items-center gap-5">
-        <h2 className="text-3xl mb-5 font-bold underline">Create an account</h2>
+        <h2 className="text-3xl mb-5 font-bold">Create an account</h2>
 
         <div className="">
           <Formik
