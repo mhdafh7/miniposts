@@ -24,7 +24,7 @@ const Signin = () => {
   return (
     <div className="hero min-h-screen bg-base-200">
       <div className="hero-content flex-col items-center gap-5">
-        <h2 className="text-3xl font-bold mb-6 underline">Sign in</h2>
+        <h2 className="text-3xl font-bold mb-6">Sign in</h2>
         <div className="">
           <Formik
             initialValues={{
@@ -80,10 +80,19 @@ const Signin = () => {
                 </div>
                 <button
                   type="submit"
-                  disabled={isSubmitting || !formik.isValid}
+                  disabled={
+                    isSubmitting ||
+                    !formik.isValid ||
+                    formik.values.email === "" ||
+                    formik.values.password === ""
+                  }
                   className="btn btn-block btn-primary mt-3"
                 >
-                  Signin
+                  {isSubmitting ? (
+                    <span className="loading loading-dots loading-sm text-primary"></span>
+                  ) : (
+                    "Signin"
+                  )}
                 </button>
               </Form>
             )}
